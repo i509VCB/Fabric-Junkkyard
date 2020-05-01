@@ -1,16 +1,15 @@
-# Fabric Example Mod
+# The Fabric Junkkyard
 
-## Setup
+### By i509VCB
 
-1. Edit build.gradle and mod.json to suit your needs.
-    * The "mixins" object can be removed from mod.json if you do not need to use mixins.
-    * Please replace all occurences of "modid" with your own mod ID - sometimes, a different string may also suffice.
-2. Run the following command:
+A repo of random stuff for fabric, ideas and hacks.
 
-```
-./gradlew idea
-```
+### Licensing
+All code in this repo is Licensed under the [MIT License](LICENSE) UNLESS otherwise noted by the README.md files inside each of the modules.
 
-## License
+## [Custom Model Items](src/main/java/me/i509/junkkyard/armor/README.md)
+Allows use of custom armor models on items (thanks to l-x-u for some concepts).
+Also adds the use armor textures outside of MC namespace.
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## [PreLaunchHacks](src/main/java/me/i509/junkkyard/hacks/README.md)
+Allows Mixins to be applied to non-minecraft code. This is a hack and will not be supported. It exists here solely for archival.

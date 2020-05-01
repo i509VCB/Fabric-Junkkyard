@@ -1,11 +1,9 @@
 {
   "required": true,
-  "package": "net.fabricmc.example.mixin",
+  "package": "me.i509.junkkyard.armor.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
-    "ExampleMixin"
+    "ArmorFeatureRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

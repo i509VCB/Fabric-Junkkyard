@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "juunkyard",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -17,19 +17,13 @@
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
-    ]
-  },
+  "entrypoints": {},
   "mixins": [
-    "modid.mixins.json"
+    "mixins.armortest.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.2",
-    "fabric": "*",
-    "minecraft": "1.15.x"
+    "fabric": "*"
   },
   "suggests": {
     "flamingo": "*"
