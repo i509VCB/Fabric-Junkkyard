@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "me.i509.junkkyard.entity.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ServerWorldMixin"
+  ],
+  "client": [
+    "client.ClientWorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

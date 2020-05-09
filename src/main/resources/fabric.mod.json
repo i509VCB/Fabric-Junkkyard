@@ -17,9 +17,18 @@
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
-  "entrypoints": {},
+  "entrypoints": {
+    "main": [
+      "me.i509.junkkyard.hacks.test.JuunkyardInit"
+    ],
+    "client": [
+      "me.i509.junkkyard.render.JunkkyardClient"
+    ]
+  },
   "mixins": [
-    "mixins.armortest.json"
+    "mixins.chunk.json",
+    "mixins.entity.json",
+    "mixins.villager.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.2",

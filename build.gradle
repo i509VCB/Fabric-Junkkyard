@@ -1,5 +1,5 @@
 plugins {
-	id "com.jfrog.bintray" version "1.+"
+	id "com.jfrog.bintray" version "1.0"
 	id 'fabric-loom' version '0.2.7-SNAPSHOT'
 	id 'maven-publish'
 }

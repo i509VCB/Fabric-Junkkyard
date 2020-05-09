@@ -2,6 +2,8 @@ package me.i509.junkkyard.armor.mixin;
 
 import java.util.Map;
 
+import me.i509.junkkyard.armor.CustomArmorModel;
+import me.i509.junkkyard.armor.TexturedArmor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,9 +21,6 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import me.i509.juunkyard.armor.CustomArmorModel;
-import me.i509.juunkyard.armor.TexturedArmor;
 
 @Mixin(ArmorFeatureRenderer.class)
 public abstract class ArmorFeatureRendererMixin<T extends LivingEntity, M extends BipedEntityModel<T>, A extends BipedEntityModel<T>> {

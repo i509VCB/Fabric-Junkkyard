@@ -2,7 +2,7 @@ package me.i509.junkkyard.hacks.test;
 
 import java.lang.reflect.InvocationTargetException;
 
-import me.i509.juunkyard.hacks.PreLaunchHacks;
+import me.i509.junkkyard.hacks.PreLaunchHacks;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 
 public class JuunkyardPreLaunch implements PreLaunchEntrypoint {
