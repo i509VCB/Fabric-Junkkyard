@@ -31,9 +31,7 @@ public class ClientEntityEvents {
 			profiler.pop();
 		} else {
 			for (EntityLoadCallback<ClientWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
 				callback.onEntityLoad(entity, world);
-				profiler.pop();
 			}
 		}
 	});
@@ -54,9 +52,7 @@ public class ClientEntityEvents {
 			profiler.pop();
 		} else {
 			for (EntityUnloadCallback<ClientWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
 				callback.onEntityUnload(entity, world);
-				profiler.pop();
 			}
 		}
 	});

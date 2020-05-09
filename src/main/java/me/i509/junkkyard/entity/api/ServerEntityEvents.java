@@ -24,9 +24,7 @@ public final class ServerEntityEvents {
 			profiler.pop();
 		} else {
 			for (EntityLoadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
 				callback.onEntityLoad(entity, world);
-				profiler.pop();
 			}
 		}
 	});
@@ -35,7 +33,7 @@ public final class ServerEntityEvents {
 		final Profiler profiler = world.getProfiler();
 
 		if (EventFactory.isProfilingEnabled()) {
-			profiler.push("fabricServerEntityLoad");
+			profiler.push("fabricServerEntityUnload");
 
 			for (EntityUnloadCallback<ServerWorld> callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
@@ -46,9 +44,7 @@ public final class ServerEntityEvents {
 			profiler.pop();
 		} else {
 			for (EntityUnloadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
 				callback.onEntityUnload(entity, world);
-				profiler.pop();
 			}
 		}
 	});

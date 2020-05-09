@@ -26,6 +26,7 @@
     ]
   },
   "mixins": [
+    "mixins.blockentities.json",
     "mixins.chunk.json",
     "mixins.entity.json",
     "mixins.villager.json"
