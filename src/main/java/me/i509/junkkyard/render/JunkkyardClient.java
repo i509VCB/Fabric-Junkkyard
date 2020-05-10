@@ -3,6 +3,8 @@ package me.i509.junkkyard.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.i509.junkkyard.blockentity.api.ServerBlockEntityEvents;
 import me.i509.junkkyard.entity.client.api.ClientEntityEvents;
+import me.i509.junkkyard.entity.impl.ClientEntityTests;
+import me.i509.junkkyard.entity.impl.ServerEntityTests;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
@@ -16,6 +18,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -24,9 +27,11 @@ import net.minecraft.util.registry.Registry;
 public class JunkkyardClient implements ClientModInitializer {
 	private int clientEntities;
 	private int clientBlockEntities;
+	private ClientEntityTests clientTest;
 
 	@Override
 	public void onInitializeClient() {
+		/*
 		ServerBlockEntityEvents.LOAD.register((entity, world) -> {
 			this.clientBlockEntities++;
 			System.out.println(this.clientBlockEntities + " -> LDC :: " + Registry.BLOCK_ENTITY_TYPE.getId(entity.getType()).toString());
@@ -57,27 +62,9 @@ public class JunkkyardClient implements ClientModInitializer {
 
 				System.out.println("actualC -- " + actual);
 			}
-		});
+		});*/
 
-		/*
-		ClientEntityEvents.LOAD.register((entity, world) -> {
-			this.clientEntities++;
-			System.out.println(this.clientEntities + " -> LD :: " + Registry.ENTITY_TYPE.getId(entity.getType()).toString());
-		});
-
-		ClientEntityEvents.UNLOAD.register((entity, world) -> {
-			this.clientEntities--;
-			System.out.println(this.clientEntities + " -> UL :: " + Registry.ENTITY_TYPE.getId(entity.getType()).toString());
-		});
-
-		// TODO: Bind this to `disconnect from server instead?` -- TEMP: TAIL of MinecraftClient#disconnect(Screen)
-		ServerStopCallback.EVENT.register(minecraftServer -> {
-			if (!minecraftServer.isDedicated()) { // fixme: Use ClientNetworking#PLAY_DISCONNECTED instead of the server stop callback, and then stop tracking here
-				this.clientEntities = 0; // We need to stop tracking all entities since we are being disconnected
-			}
-			//this.clientEntities = 0; // All entities are unloaded, and should stop being tracked
-		});
-		 */
+		this.clientTest = new ClientEntityTests(this);
 
 		// TODO:
 		HudRenderCallback.EVENT.register((matrices, tickDelta) -> {

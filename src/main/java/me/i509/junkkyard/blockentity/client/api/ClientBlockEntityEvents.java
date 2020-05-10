@@ -7,7 +7,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 
 @Environment(EnvType.CLIENT)
