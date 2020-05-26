@@ -1,9 +1,10 @@
 {
   "required": true,
-  "package": "me.i509.junkkyard.villager.mixin",
+  "package": "me.i509.junkkyard.hud.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "TypeAwareTradeMixin"
+    "InGameHudAccessor",
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

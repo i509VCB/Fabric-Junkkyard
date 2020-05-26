@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "me.i509.junkkyard.villager.mixin",
+  "package": "me.i509.junkkyard.screen.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "TypeAwareTradeMixin"
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

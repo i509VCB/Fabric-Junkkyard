@@ -23,6 +23,8 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	implementation "org.checkerframework:checker-qual:3.0.1"
 }
 
 processResources {
