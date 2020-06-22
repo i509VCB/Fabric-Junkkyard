@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "me.i509.junkkyard.hud.mixin",
+  "package": "me.i509.junkkyard.lifecycle.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "InGameHudMixin"
+    "MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

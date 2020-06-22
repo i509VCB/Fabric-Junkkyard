@@ -4,8 +4,8 @@ pluginManagement {
         mavenCentral()
         jcenter()
         maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+            name = "Fabric"
+            url = java.net.URI("https://maven.fabricmc.net/")
         }
     }
 }

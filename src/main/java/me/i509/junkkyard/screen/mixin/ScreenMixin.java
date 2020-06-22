@@ -1,23 +1,24 @@
 package me.i509.junkkyard.screen.mixin;
-
-import java.util.Collections;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
 
 import me.i509.junkkyard.screen.api.ScreenContext;
 import me.i509.junkkyard.screen.api.ScreenInitializeCallback;
+import me.i509.junkkyard.screen.impl.ButtonList;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin implements ScreenContext {
@@ -28,6 +29,12 @@ public abstract class ScreenMixin implements ScreenContext {
 	@Shadow
 	@Final
 	protected List<AbstractButtonWidget> buttons;
+	@Shadow
+	@Final
+	protected List<Element> children;
+
+	@Unique
+	private ButtonList<AbstractButtonWidget> fabricButtons;
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
 	private void onInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
@@ -35,8 +42,13 @@ public abstract class ScreenMixin implements ScreenContext {
 	}
 
 	@Override
-	public List<AbstractButtonWidget> buttons() {
-		return Collections.unmodifiableList(this.buttons);
+	public List<AbstractButtonWidget> getButtons() {
+		// Lazy init to handle class init
+		if (this.fabricButtons == null) {
+			this.fabricButtons = new ButtonList<>(this.buttons, this.children);
+		}
+
+		return this.fabricButtons;
 	}
 
 	@Override
@@ -50,7 +62,7 @@ public abstract class ScreenMixin implements ScreenContext {
 	}
 
 	@Override
-	public Screen screen() {
+	public Screen getScreen() {
 		return (Screen) (Object) this;
 	}
 }

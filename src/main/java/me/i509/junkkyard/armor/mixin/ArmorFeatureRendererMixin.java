@@ -22,14 +22,18 @@ public abstract class ArmorFeatureRendererMixin<T extends LivingEntity, M extend
 	@ModifyArg(at = @At(value = "INVOKE", target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"), method = "getArmorTexture", index = 0)
 	private String getCustomTexture(String inputPath, EquipmentSlot slot, ArmorItem item, boolean secondLayer, /* @Nullable */ String suffix) {
 		if (item instanceof TexturedArmor) { // If we implement textured armor, we use the registry namespace of the item for the texture
-			Identifier itemId = Registry.ITEM.getId(item);
+			final Identifier itemId = Registry.ITEM.getId(item);
 
-			// If we get the default id, then this item does not exist in the registry. This shouldn't happen, but we will let vanilla fail however it will.
+			// If we get the default id, then this item does not exist in the registry. This shouldn't happen, but we will let vanilla handle failing this.
 			if (itemId.equals(Registry.ITEM.getDefaultId())) {
 				return inputPath;
 			}
 
-			return itemId.getNamespace() + ":" + inputPath; // TODO: Or should we construct an identifier here and toString it for safety
+			final String identifier = itemId.getNamespace() + ":" + inputPath;
+
+			if (Identifier.tryParse(identifier) != null) { // Only return if our identifier is valid
+				return identifier;
+			}
 		}
 
 		return inputPath;

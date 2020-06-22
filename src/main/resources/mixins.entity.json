@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "me.i509.junkkyard.entity.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "EntityMixin",
+    "ServerPlayerEntityMixin",
+    "TeleportCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -3,6 +3,7 @@
   "package": "me.i509.junkkyard.villager.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "TradeOffersMixin",
     "TypeAwareTradeMixin"
   ],
   "injectors": {

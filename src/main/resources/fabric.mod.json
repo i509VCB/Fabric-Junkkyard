@@ -26,9 +26,10 @@
     ]
   },
   "mixins": [
-    "mixins.villager.json",
+    "mixins.entity.json",
     "mixins.hud.json",
-    "mixins.screen.json"
+    "mixins.screen.json",
+    "mixins.lifecycle.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.2",

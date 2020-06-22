@@ -1,32 +1,24 @@
 package me.i509.junkkyard.villager.mixin;
 
-import java.util.Map;
+import java.util.Random;
 import java.util.stream.Stream;
 
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.item.Item;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.village.VillagerType;
-
-import me.i509.junkkyard.villager.impl.DefaultedMap;
+import net.minecraft.village.TradeOffer;
 
 @Mixin(targets = "net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory")
 public abstract class TypeAwareTradeMixin {
-	@Final
-	@Mutable
-	@Shadow
-	private Map<VillagerType, Item> map;
-
 	/**
-	 * So vanilla will check the VillagerType -> Item map in the stream and throw an exception for missing villager types.
+	 * Vanilla will check the "VillagerType -> Item" map in the stream and throw an exception for villager types not specified in the map. This breaks any and all custom villager types.
 	 * We want to prevent this so we can register custom villager types. So we return an empty stream so it will never throw an exception.
 	 */
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DefaultedRegistry;stream()Ljava/util/stream/Stream;"))
@@ -34,13 +26,10 @@ public abstract class TypeAwareTradeMixin {
 		return Stream.empty();
 	}
 
-	/**
-	 * We set the map to a map which will default to the plains key in case of a null value.
-	 * This is so we avoid having air as the buying item in trades that villagers of custom types can hold.
-	 * Avoid the AccessWidener by @Coercing the package-private object that is basically this to object.
-	 */
-	@Redirect(method = "<init>", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory;map:Ljava/util/Map;"))
-	private void useDefaultedMap(@Coerce Object self, Map<VillagerType, Item> value) {
-		this.map = new DefaultedMap<>(value, VillagerType.PLAINS);
+	@Inject(method = "create", at = @At(value = "NEW", target = "net/minecraft/village/TradeOffer"), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
+	private void failOnNullItem(Entity entity, Random random, CallbackInfoReturnable<TradeOffer> cir, ItemStack buyingItem) {
+		if (buyingItem.isEmpty()) { // Will return true for an "empty" item stack that had null passed in the ctor
+			cir.setReturnValue(null); // Return null to prevent creation of empty trades
+		}
 	}
 }

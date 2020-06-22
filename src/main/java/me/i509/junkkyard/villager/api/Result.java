@@ -1,6 +1,12 @@
 package me.i509.junkkyard.villager.api;
 
 import java.util.Optional;
+import java.util.Random;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOffers;
+import net.minecraft.village.VillagerProfession;
 
 public final class Result<T> {
 	private static final Result<?> PASS = new Result<>();
@@ -39,5 +45,11 @@ public final class Result<T> {
 
 	public boolean isPassing() {
 		return this == PASS;
+	}
+
+	public void test() {
+		TradeOfferHelper.registerOffers(VillagerProfession.CLERIC, 5, factories -> {
+
+		});
 	}
 }

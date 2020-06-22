@@ -26,4 +26,4 @@ run/
 remappedSrc/
 
 # private
-private.gradle
+private.gradle.kts
