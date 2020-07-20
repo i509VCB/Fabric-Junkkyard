@@ -3,7 +3,8 @@
   "package": "me.i509.junkkyard.lifecycle.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

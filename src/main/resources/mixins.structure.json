@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "me.i509.junkkyard.structure.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ChunkSerializerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

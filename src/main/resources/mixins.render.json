@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "me.i509.junkkyard.render.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "LivingEntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

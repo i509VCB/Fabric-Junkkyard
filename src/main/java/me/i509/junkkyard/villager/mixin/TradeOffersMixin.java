@@ -17,6 +17,6 @@ import me.i509.junkkyard.villager.impl.TradeOfferInternals;
 public abstract class TradeOffersMixin {
 	@Inject(method = "method_16929(Ljava/util/HashMap;)V", at = @At("TAIL"))
 	private void appendCustomTrades(HashMap<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> tradeMap, CallbackInfo ci) {
-		TradeOfferInternals.populateOffers(tradeMap);
+		TradeOfferInternals.applyVillagerTradeOffers(tradeMap);
 	}
 }

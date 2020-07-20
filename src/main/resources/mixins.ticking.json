@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "me.i509.junkkyard.ticking.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockEntityMixin",
+    "EntityMixin",
+    "WorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

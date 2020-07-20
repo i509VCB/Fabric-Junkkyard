@@ -1,57 +1,79 @@
 package me.i509.junkkyard.villager.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
+import me.i509.junkkyard.villager.api.TradeOfferHelper;
+
 public final class TradeOfferInternals {
-	private static final Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> TRADE_FACTORIES = new HashMap<>();
+	private static final Map<VillagerProfession, RegistrationEntry> VILLAGER_PROFESSION_FACTORIES = new IdentityHashMap<>();
 
-	private TradeOfferInternals() {
+	// TODO: Figure out how to handle existing mods. Maybe refresh the list after any additions
+	public static void registerVillagerProfessionOffers(VillagerProfession profession, Consumer<TradeOfferHelper.Registrar> consumer) {
+		Objects.requireNonNull(profession, "Profession cannot be null");
+		Objects.requireNonNull(consumer, "Consumer cannot be null");
+		VILLAGER_PROFESSION_FACTORIES.computeIfAbsent(profession, key -> new RegistrationEntry()).consumers.add(consumer);
 	}
 
-	public static void registerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
-		final List<TradeOffers.Factory> list = new ArrayList<>();
-		factory.accept(list);
+	public static void applyVillagerTradeOffers(Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> tradeMap) {
+		for (Map.Entry<VillagerProfession, RegistrationEntry> professionFactoryEntry : VILLAGER_PROFESSION_FACTORIES.entrySet()) {
+			final VillagerProfession profession = professionFactoryEntry.getKey();
+			final Int2ObjectMap<TradeOffers.Factory[]> levelToFactoryMap = tradeMap.computeIfAbsent(profession, key -> new Int2ObjectArrayMap<>());
 
-		final TradeOffers.Factory[] additionalEntries = list.toArray(new TradeOffers.Factory[0]);
-		final Int2ObjectMap<TradeOffers.Factory[]> professionEntry = TRADE_FACTORIES.computeIfAbsent(profession, p -> new Int2ObjectOpenHashMap<>());
+			final Registrar registrar = new Registrar();
 
-		final TradeOffers.Factory[] currentEntries = professionEntry.computeIfAbsent(level, l -> new TradeOffers.Factory[0]);
-		final TradeOffers.Factory[] newEntries = merge(additionalEntries, currentEntries);
-		professionEntry.put(level, newEntries);
-	}
+			for (Consumer<TradeOfferHelper.Registrar> consumer : professionFactoryEntry.getValue().consumers) {
+				consumer.accept(registrar);
+			}
 
-	public static void populateOffers(Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> tradeMap) {
-		for (Map.Entry<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> tradeFactoryEntry : TRADE_FACTORIES.entrySet()) {
-			// Create an empty map or get all existing profession entries
-			final Int2ObjectMap<TradeOffers.Factory[]> leveledFactoryMap = tradeMap.computeIfAbsent(tradeFactoryEntry.getKey(), k -> new Int2ObjectOpenHashMap<>());
-			// Get our existing entries
-			final Int2ObjectMap<TradeOffers.Factory[]> value = tradeFactoryEntry.getValue();
-
-			// Iterate through the existing entries
-			for (Int2ObjectMap.Entry<TradeOffers.Factory[]> entry : value.int2ObjectEntrySet()) {
-				// Make a new array to merge the existing and factory provided entries
-				final TradeOffers.Factory[] result = merge(leveledFactoryMap.get(entry.getIntKey()), entry.getValue());
-				// And write the new array to the map to be passed back to the public static field
-				leveledFactoryMap.put(entry.getIntKey(), result);
+			for (Map.Entry<Integer, List<TradeOffers.Factory>> registeredFactories : registrar.factories.entrySet()) {
+				final int professionLevel = registeredFactories.getKey();
+				final TradeOffers.Factory[] tradeFactories = levelToFactoryMap.computeIfAbsent(professionLevel, key -> new TradeOffers.Factory[0]);
+				final TradeOffers.Factory[] addedFactories = registeredFactories.getValue().toArray(new TradeOffers.Factory[0]);
+				final TradeOffers.Factory[] result = TradeOfferInternals.merge(tradeFactories, addedFactories);
+				levelToFactoryMap.put(professionLevel, result);
 			}
 		}
 	}
 
 	private static TradeOffers.Factory[] merge(TradeOffers.Factory[] array, TradeOffers.Factory[] other) {
-		TradeOffers.Factory[] result = new TradeOffers.Factory[array.length + other.length];
+		final TradeOffers.Factory[] result = (TradeOffers.Factory[]) Array.newInstance(TradeOffers.Factory.class, array.length + other.length);
 		System.arraycopy(array, 0, result, 0, array.length);
-		System.arraycopy(other, 0, result, array.length, other.length);
+		System.arraycopy(other, array.length - 1, result, array.length - 1, other.length);
 
 		return result;
+	}
+
+	private static final class RegistrationEntry {
+		private final List<Consumer<TradeOfferHelper.Registrar>> consumers = new ArrayList<>();
+
+		private RegistrationEntry() {
+		}
+	}
+
+	private static final class Registrar implements TradeOfferHelper.Registrar {
+		private final Map<Integer, List<TradeOffers.Factory>> factories = new IdentityHashMap<>();
+
+		private Registrar() {
+		}
+
+		@Override
+		public void register(int level, TradeOffers.Factory factory) {
+			this.factories.computeIfAbsent(level, key -> new ArrayList<>()).add(factory);
+		}
+	}
+
+	private TradeOfferInternals() {
 	}
 }

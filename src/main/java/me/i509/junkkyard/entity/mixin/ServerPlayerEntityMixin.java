@@ -29,6 +29,20 @@ public abstract class ServerPlayerEntityMixin extends EntityMixin {
 	@Shadow
 	public abstract ServerWorld getServerWorld();
 
+	@Inject(method = "teleport", at = @At("TAIL"))
+	private void fireAfterChangeWorld(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
+		// TODO: Fire after world change
+	}
+
+	@Inject(method = "teleport", at = @At("TAIL"))
+	private void fireAfterTeleport(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
+		if (targetWorld != this.world) {
+			// TODO: Fire After world change
+		}
+	}
+
+	// TODO: Old code below
+
 	@Unique
 	private boolean portalForcerDimensionChangedEventFired;
 

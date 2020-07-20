@@ -2,6 +2,8 @@ package me.i509.junkkyard.entity;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Objects;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -17,36 +19,30 @@ import net.minecraft.world.World;
 public final class Transform<W extends World> implements WorldPosition {
 	private final W world;
 	private final Vec3d pos;
-	private final Vec2f rotation;
+	private final float yaw;
+	private final float pitch;
 
 	public static Transform<World> from(Entity entity) {
-		checkNotNull(entity, "Cannot create transform from null entity");
+		Objects.requireNonNull(entity, "Cannot create transform from null entity");
 
-		return of(entity.world, entity.getPos(), new Vec2f(entity.yaw, entity.pitch));
+		return of(entity.world, entity.getPos(), entity.yaw, entity.pitch);
 	}
 
 	public static Transform<ServerWorld> from(ServerPlayerEntity player) {
-		checkNotNull(player, "Cannot create transform from null player");
+		Objects.requireNonNull(player, "Cannot create transform from null player");
 
-		return of(player.getServerWorld(), player.getPos(), new Vec2f(player.yaw, player.pitch));
+		return of(player.getServerWorld(), player.getPos(), player.yaw, player.pitch);
 	}
 
 	public static <W extends World> Transform<W> of(W world, Vec3d pos, float yaw, float pitch) {
-		return of(world, pos, new Vec2f(yaw, pitch));
+		return new Transform<>(world, pos, yaw, pitch);
 	}
 
-	public static <W extends World> Transform<W> of(W world, Vec3d pos, Vec2f rotation) {
-		checkNotNull(world, "Cannot create transform from null world");
-		checkNotNull(pos, "Cannot create transform with null position");
-		checkNotNull(rotation, "Cannot create transform with no rotation");
-
-		return new Transform<>(world, pos, rotation);
-	}
-
-	private Transform(W world, Vec3d pos, Vec2f rotation) {
+	private Transform(W world, Vec3d pos, float yaw, float pitch) {
 		this.world = world;
 		this.pos = pos;
-		this.rotation = rotation;
+		this.yaw = yaw;
+		this.pitch = pitch;
 	}
 
 	@Override
@@ -73,46 +69,36 @@ public final class Transform<W extends World> implements WorldPosition {
 		return this.pos;
 	}
 
-	public Vec2f getRotation() {
-		return this.rotation;
-	}
-
 	public float getYaw() {
-		return this.rotation.x;
+		return this.yaw;
 	}
 
 	public float getPitch() {
-		return this.rotation.y;
+		return this.pitch;
 	}
 
 	public <N extends World> Transform<N> with(N world) {
-		checkNotNull(world, "Cannot create transform with null world.");
+		Objects.requireNonNull(world, "Cannot create transform with null world.");
 
-		return new Transform<>(world, this.getPos(), this.getRotation());
+		return new Transform<>(world, this.getPos(), this.yaw, this.pitch);
 	}
 
 	public Transform<W> with(Vec3d pos) {
-		checkNotNull(pos, "Cannot create transform with null position.");
+		Objects.requireNonNull(pos, "Cannot create transform with null position.");
 
-		return new Transform<>(this.getWorld(), pos, this.getRotation());
-	}
-
-	public Transform<W> with(Vec2f rotation) {
-		checkNotNull(rotation, "Cannot create transform with null rotation.");
-
-		return new Transform<>(this.getWorld(), this.getPos(), rotation);
+		return new Transform<>(this.getWorld(), pos, this.yaw, this.pitch);
 	}
 
 	public Transform<W> with(float yaw, float pitch) {
-		return this.with(new Vec2f(yaw, pitch));
+		return new Transform<>(this.getWorld(), this.getPos(), yaw, pitch);
 	}
 
 	public Transform<W> withYaw(float yaw) {
-		return this.with(new Vec2f(yaw, this.getRotation().y));
+		return new Transform<>(this.getWorld(), this.getPos(), yaw, this.pitch);
 	}
 
 	public Transform<W> withPitch(float pitch) {
-		return this.with(new Vec2f(this.getRotation().x, pitch));
+		return new Transform<>(this.getWorld(), this.getPos(), this.yaw, pitch);
 	}
 
 	@Override
@@ -124,7 +110,8 @@ public final class Transform<W extends World> implements WorldPosition {
 
 		// Validate pos and rotation
 		if (!this.getPos().equals(that.getPos())) return false;
-		if (!this.getRotation().equals(that.getRotation())) return false;
+		if (this.getYaw() != that.getYaw()) return false;
+		if (this.getPitch() != that.getPitch()) return false;
 
 		// Fail if the other world is not on the same logical side, then check the registry key
 		if (this.getWorld().isClient() != that.getWorld().isClient()) return false;
@@ -136,10 +123,10 @@ public final class Transform<W extends World> implements WorldPosition {
 
 	@Override
 	public int hashCode() {
-		int result = this.getWorld().getRegistryKey().hashCode();
-		result = 31 * result + System.identityHashCode(this.getWorld().isClient());
+		int result = this.getWorld().hashCode();
 		result = 31 * result + this.getPos().hashCode();
-		result = 31 * result + this.getRotation().hashCode();
+		result = 31 * result + (this.getYaw() != 0.0f ? Float.floatToIntBits(this.getYaw()) : 0);
+		result = 31 * result + (this.getPitch() != 0.0f ? Float.floatToIntBits(this.getPitch()) : 0);
 		return result;
 	}
 }

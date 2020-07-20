@@ -7,19 +7,43 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+
+import me.i509.junkkyard.render.api.RegisterFeatureRendererEvent;
 
 public class JunkkyardClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		// TODO:
+		RegisterFeatureRendererEvent.event(ArmorStandEntityRenderer.class).register((entityRenderer, acceptor) -> {
+			acceptor.accept(new FeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel>(entityRenderer) {
+				@Override
+				public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorStandEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+					matrices.push();
+					final ModelPart modelPart = new ModelPart(20, 20, 0, 0).addCuboid(1.0F, 1.0F, 1.0F, 10.0F, 5.0F, 2.0F);
+
+					matrices.scale(20, 20, 20);
+					modelPart.render(matrices, vertexConsumers.getBuffer(RenderLayer.getSolid()), light, OverlayTexture.DEFAULT_UV);
+					//MinecraftClient.getInstance().textRenderer.draw(matrices, "yeet", 100, 40, Formatting.GREEN.getColorValue());
+					matrices.pop();
+				}
+			});
+		});
+	}
+
+	public void otherTest() {
 		HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
 			final MinecraftClient client = MinecraftClient.getInstance();
 			final ClientPlayerEntity player = client.player;

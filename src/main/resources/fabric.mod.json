@@ -29,7 +29,10 @@
     "mixins.entity.json",
     "mixins.hud.json",
     "mixins.screen.json",
-    "mixins.lifecycle.json"
+    "mixins.lifecycle.json",
+    "mixins.ticking.json",
+    "mixins.render.json",
+    "mixins.structure.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.2",

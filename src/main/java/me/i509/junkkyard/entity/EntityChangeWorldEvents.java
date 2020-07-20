@@ -109,6 +109,10 @@ public class EntityChangeWorldEvents {
 		void onChangeWorld(Entity entity, ServerWorld origin, ServerWorld destination, TeleportData teleport);
 	}
 
+	public interface AfterChangeWorld {
+		void afterChangeWorld(Entity oldEntity, Entity newEntity);
+	}
+
 	public static final class TeleportData {
 		private final double originalX;
 		private final double originalY;
